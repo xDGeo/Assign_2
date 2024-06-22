@@ -1,0 +1,78 @@
+{% extends 'trivia/base.html' %}
+
+{% block title %}Game{% endblock %}
+
+{% block content %}
+    <h2>Game</h2>
+    <p id="question">Current question: {{ game.current_question.question_text }}</p>
+    <form id="answerForm" method="post">
+        {% csrf_token %}
+        <label for="answer">Your answer:</label>
+        <input type="text" name="answer" id="answer">
+        <button type="submit" class="button">Submit</button>
+    </form>
+    <p>Player 1 score: <span id="player1_score">{{ game.player1_score }}</span></p>
+    <p>Player 2 score: <span id="player2_score">{{ game.player2_score }}</span></p>
+    <p id="wait-message">Wait for your turn.</p>
+
+    <script>
+        $(document).ready(function() {
+            const userId = {{ request.user.id }};
+            const player1Id = {{ game.player1.id }};
+            const player2Id = {{ game.player2.id }};
+
+            $('#answerForm').submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '',
+                    data: {
+                        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                        'answer': $('#answer').val()
+                    },
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.url;
+                        } else if (response.next_turn) {
+                            $('#wait-message').show();
+                            $('#answer').val('');
+                        } else if (response.wait) {
+                            $('#wait-message').show();
+                        } else if (response.no_questions) {
+                            alert('No more questions available.');
+                            window.location.href = '/';
+                        } else {
+                            $('#wait-message').hide();
+                            $('#question').text('Current question: ' + response.question);
+                            $('#player1_score').text(response.player1_score);
+                            $('#player2_score').text(response.player2_score);
+                            $('#answer').val('');
+                        }
+                    }
+                });
+            });
+
+            function updateGameStatus() {
+                $.ajax({
+                    type: 'GET',
+                    url: '',
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.url;
+                        } else if ((response.current_turn == 1 && userId != player1Id) || (response.current_turn == 2 && userId != player2Id)) {
+                            $('#wait-message').show();
+                        } else {
+                            $('#wait-message').hide();
+                            $('#question').text('Current question: ' + response.question);
+                            $('#player1_score').text(response.player1_score);
+                            $('#player2_score').text(response.player2_score);
+                        }
+                    }
+                });
+            }
+
+            // Update the game status every 1 second
+            setInterval(updateGameStatus, 1000);
+        });
+    </script>
+{% endblock %}

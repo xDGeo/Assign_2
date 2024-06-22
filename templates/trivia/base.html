@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Trivia Game{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'trivia/styles.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'trivia/scripts.js' %}"></script>
+</head>
+<body>
+    <div class="topbar">
+        <a href="{% url 'home' %}" class="button">Home</a>
+        <a href="{% url 'logout' %}" class="button">Logout</a>
+        <span class="username">Logged in as: {{ user.username }}</span>
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

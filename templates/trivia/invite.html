@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invite a Player</title>
+</head>
+<body>
+    <h2>Invite a Player</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username">
+        <button type="submit">Send Invite</button>
+    </form>
+</body>
+</html>
