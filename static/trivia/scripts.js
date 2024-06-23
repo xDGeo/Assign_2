@@ -5,14 +5,14 @@ $(document).ready(function() {
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                // Update invitations
+                // update the invitations
                 var invitesList = $('#invites ul');
                 invitesList.empty();
                 data.invitations.forEach(function(invitation) {
                     invitesList.append('<li>' + invitation.from_user.username + ' has invited you to a game! <a href="/accept_invitation/' + invitation.id + '/" class="accept-invite">Accept</a> | <a href="/reject_invitation/' + invitation.id + '/" class="reject-invite">Reject</a></li>');
                 });
 
-                // Update active games
+                // update the game list
                 var gamesList = $('#active-games ul');
                 gamesList.empty();
                 data.games_with_opponent.forEach(function(game) {
@@ -22,10 +22,10 @@ $(document).ready(function() {
         });
     }
 
-    // Fetch updates every 1 second
+    // check and fetch updates every second
     setInterval(fetchUpdates, 1000);
 
-    // Handle accept invite link
+    // handle the accept invite link
     $(document).on('click', '.accept-invite', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -40,7 +40,7 @@ $(document).ready(function() {
         });
     });
 
-    // Handle reject invite link
+    // handle the reject link
     $(document).on('click', '.reject-invite', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -53,7 +53,7 @@ $(document).ready(function() {
         });
     });
 
-    // Handle send invite form submission
+    // handle the send invite form
     $('#send-invite-form').on('submit', function(e) {
         e.preventDefault();
         var form = $(this);
@@ -62,7 +62,7 @@ $(document).ready(function() {
             type: form.attr('method'),
             data: form.serialize(),
             success: function() {
-                form.find('input[name="username"]').val('');  // Clear the input field
+                form.find('input[name="username"]').val('');
                 fetchUpdates();
             }
         });

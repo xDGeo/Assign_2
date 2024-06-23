@@ -6,7 +6,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
 
-        # Join game group
+        # join game
         await self.channel_layer.group_add(
             self.game_group_name,
             self.channel_name
@@ -25,7 +25,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
-        # Send message to game group
+        # send and receive socket messages
         await self.channel_layer.group_send(
             self.game_group_name,
             {
@@ -37,7 +37,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def game_message(self, event):
         message = event['message']
 
-        # Send message to WebSocket
+        #receive message from game group through websocket
         await self.send(text_data=json.dumps({
             'message': message
         }))

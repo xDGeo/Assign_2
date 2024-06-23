@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from trivia.models import Question
-
+#add the questions to the database, file can be modified to add more questions or change topics
 class Command(BaseCommand):
     help = 'Add questions about European capitals to the database'
 
